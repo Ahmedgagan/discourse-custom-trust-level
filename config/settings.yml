@@ -15,3 +15,7 @@ plugins:
   display_tl0_website_as_link:
     default: false
     client: true
+  can_invite_to_topic_min_trust_level:
+    default: 2
+    enum: "TrustLevelSetting"
+    client: true
