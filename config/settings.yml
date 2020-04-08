@@ -2,20 +2,20 @@ plugins:
   custom_trust_level_enabled:
     default: true
     client: true
-  can_create_post_on_topic_min_trust_level:
+  csl_can_create_post_on_topic_min_trust_level:
     default: 0
     enum: "TrustLevelSetting"
     client: true
-  can_tl3_edit_topics:
+  csl_can_tl3_edit_topics:
     default: true
     client: true
-  can_tl0_reply_as_new_topic:
+  csl_can_tl0_reply_as_new_topic:
     default: false
     client: true
-  display_tl0_website_as_link:
+  csl_display_tl0_website_as_link:
     default: false
     client: true
-  can_invite_to_topic_min_trust_level:
+  csl_can_invite_to_topic_min_trust_level:
     default: 2
     enum: "TrustLevelSetting"
     client: true

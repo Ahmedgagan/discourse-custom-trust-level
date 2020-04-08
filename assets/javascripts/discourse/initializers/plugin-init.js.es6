@@ -11,7 +11,7 @@ export default {
 }
 function pluginInit(api){
   api.modifyClass("controller:user",{  
-    @discourseComputed('siteSettings.display_tl0_website_as_link')
+    @discourseComputed('siteSettings.csl_display_tl0_website_as_link')
     linkWebsite(settingEnabled){
       return settingEnabled || this._super(...arguments);
     }
