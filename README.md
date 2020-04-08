@@ -30,6 +30,6 @@ This plugin allows you to add a few custom trust levels capabilities in Discours
 - Define the minimum trust level to invite users to the topic.
 
 ## Maintainers
-Github: @Ahmedgagan, Github: @fzngagan
+Github: Ahmedgagan, Github: fzngagan
 
 **Note: Test the plugin before adding it to a live website**
