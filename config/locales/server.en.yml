@@ -1,0 +1,7 @@
+en:
+  site_settings:
+    custom_trust_level_enabled: 'Enable Custom trust levels'
+    can_create_post_on_topic_min_trust_level: 'Define minimum trust level to create post on topics'
+    can_tl3_edit_topics: 'Dont allow tl3 to edit others posts'
+    can_tl0_reply_as_new_topic: 'Allow tl0 to reply as new topic'
+    display_tl0_website_as_link: 'Have actual links in the ‘about me’ field of tl0 users profile'
