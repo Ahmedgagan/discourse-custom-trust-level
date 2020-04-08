@@ -14,7 +14,6 @@ after_initialize do
     end
 
     def can_edit_topic?(topic)
-      
       return false if (
         !SiteSetting.csl_can_tl3_edit_topics &&
         SiteSetting.trusted_users_can_edit_others? &&
@@ -23,7 +22,6 @@ after_initialize do
         user.has_trust_level?(TrustLevel[3]) &&
         can_create_post?(topic)
       )
-      p "false nahi hua"  
       super
     end
 
@@ -32,7 +30,6 @@ after_initialize do
     end
 
     def can_invite_to?(object, groups = nil)
-
       return false unless authenticated?
       is_topic = object.is_a?(Topic)
       return true if is_admin? && !is_topic
@@ -55,7 +52,6 @@ after_initialize do
           end
         end
       end
-
 
       user.has_trust_level?(SiteSetting.csl_can_invite_to_topic_min_trust_level)
     end
