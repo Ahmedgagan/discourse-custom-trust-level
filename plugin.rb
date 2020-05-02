@@ -7,9 +7,57 @@
 
 enabled_site_setting :custom_trust_level_enabled
 after_initialize do
+
+  self.on(:post_created) do |post, options|
+    p "on me ghusa"
+    p post
+    p post.topic_id
+    p post.user_id
+    user = User.find(post.user_id)
+    topic = Topic.find(post.topic_id)
+    
+    if !(user.admin || user.moderator)
+      if topic.posts_count<=20
+        if topic.posts.where("user_id=?",user.id).length >= 2
+          MessageBus.publish("/#{user.id}/custom_can_create_post", false)
+        else
+          MessageBus.publish("/#{user.id}/custom_can_create_post", true)
+        end
+      elsif topic.posts_count>20 && topic.posts_count<=50
+        if topic.posts.where("user_id=?",user.id).length >= 3
+          MessageBus.publish("/#{user.id}/custom_can_create_post", false)
+        else
+          MessageBus.publish("/#{user.id}/custom_can_create_post", true)
+        end
+      elsif topic.posts_count>50
+        if topic.posts.where("user_id=?",user.id).length >= 5
+          MessageBus.publish("/#{user.id}/custom_can_create_post", false)
+        else
+          MessageBus.publish("/#{user.id}/custom_can_create_post", true)
+        end
+      end
+    end
+  end
+
+
   module ModifyCanCreate
 
     def can_create_post_on_topic?(topic)
+      return true if is_admin?
+      return true if is_moderator?
+      if topic.posts_count<=20
+        if topic.posts.where("user_id=?",current_user.id).length >= 2
+          return false
+        end
+      elsif topic.posts_count>20 && topic.posts_count<=50
+        if topic.posts.where("user_id=?",current_user.id).length >= 3
+          return false
+        end
+      elsif topic.posts_count>50
+        if topic.posts.where("user_id=?",current_user.id).length >= 5
+          return false
+        end
+      end
       is_admin?||is_moderator?||( super && user.trust_level >= SiteSetting.csl_can_create_post_on_topic_min_trust_level)
     end
 
