@@ -6,6 +6,7 @@
 
 
 enabled_site_setting :custom_trust_level_enabled
+load File.expand_path('../models/custom_trust_level_setting.rb', __FILE__)
 after_initialize do
   module ModifyCanCreate
 
@@ -57,8 +58,35 @@ after_initialize do
     end
   end
 
+  class ::PostActionCreator
+
+    private
+    def auto_hide_if_needed
+      return if @post.hidden?
+      return if !@created_by.staff? && @post.user&.staff?
+      return unless PostActionType.auto_action_flag_types.include?(@post_action_name)
+
+      # Special case: If you have min trust level and the user is TL0, and the flag is spam,
+      # hide it immediately.
+      return if SiteSetting.csl_min_trust_level_to_auto_hide_post < 0
+
+      if SiteSetting.high_trust_flaggers_auto_hide_posts &&
+          @post_action_name == :spam &&
+          @created_by.has_trust_level?(SiteSetting.csl_min_trust_level_to_auto_hide_post) &&
+          @post.user&.trust_level == TrustLevel[0]
+
+        @post.hide!(@post_action_type_id, Post.hidden_reasons[:flagged_by_tl3_user])
+        return
+      end
+
+      score = ReviewableFlaggedPost.find_by(target: @post)&.score || 0
+      if score >= Reviewable.score_required_to_hide_post
+        @post.hide!(@post_action_type_id)
+      end
+    end
+  end
+
   class ::Guardian
     prepend ModifyCanCreate if SiteSetting.custom_trust_level_enabled
-    
   end
 end
