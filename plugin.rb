@@ -56,6 +56,13 @@ after_initialize do
 
       user.has_trust_level?(SiteSetting.csl_can_invite_to_topic_min_trust_level)
     end
+
+    def can_ignore_users?
+      p "plugin called"
+      return false if anonymous?
+      @user.staff? || @user.trust_level >= SiteSetting.csl_min_trust_level_to_ignore_users
+    end
+
   end
 
   class ::PostActionCreator

@@ -1,8 +1,9 @@
 en:
   site_settings:
-    csl_custom_trust_level_enabled: 'Enable Custom trust levels'
+    custom_trust_level_enabled: 'Enable Custom trust levels'
     csl_can_create_post_on_topic_min_trust_level: 'Define minimum trust level to create post on topics'
     csl_can_tl3_edit_topics: 'Allow tl3 to edit others posts'
     csl_can_tl0_reply_as_new_topic: 'Allow tl0 to reply as new topic'
     csl_display_tl0_website_as_link: 'Have actual links in the ‘about me’ field of tl0 users profile'
     csl_can_invite_to_topic_min_trust_level: 'Define minimum trust level to invite on topic'
+    csl_min_trust_level_to_ignore_users: 'Define minimum trust level of users to ignore other users'

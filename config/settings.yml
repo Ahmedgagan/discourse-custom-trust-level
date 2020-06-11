@@ -23,3 +23,7 @@ plugins:
     default: 3
     enum: "CustomTrustLevelSetting"
     client: true
+  csl_min_trust_level_to_ignore_users:
+    default: 2
+    enum: "TrustLevelSetting"
+    client: true
