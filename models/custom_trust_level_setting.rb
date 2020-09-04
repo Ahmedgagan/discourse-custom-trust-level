@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_dependency 'enum_site_setting'
 
 class CustomTrustLevelSetting < EnumSiteSetting
@@ -15,7 +17,7 @@ class CustomTrustLevelSetting < EnumSiteSetting
         value: x
       }
     }
-    @values.unshift({name:"none", value: -1})
+    @values.unshift({ name: "none", value: -1 })
   end
 
   def self.valid_values

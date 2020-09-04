@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 # name: custom trust level
 # about: Adds a few custom trust levels capabilities in Discourse
 # version: 0.1.0
 # authors: Ahmed Gagan(Ahmedgagan), Faizan Gagan(fzngagan)
 # url: https://github.com/Ahmedgagan/discourse-custom-trust-level
-
 
 enabled_site_setting :custom_trust_level_enabled
 load File.expand_path('../models/custom_trust_level_setting.rb', __FILE__)
@@ -11,7 +12,7 @@ after_initialize do
   module ModifyCanCreate
 
     def can_create_post_on_topic?(topic)
-      is_admin?||is_moderator?||( super && user.trust_level >= SiteSetting.csl_can_create_post_on_topic_min_trust_level)
+      is_admin? || is_moderator? || (super && user.trust_level >= SiteSetting.csl_can_create_post_on_topic_min_trust_level)
     end
 
     def can_edit_topic?(topic)
@@ -58,14 +59,13 @@ after_initialize do
     end
 
     def can_ignore_users?
-      p "plugin called"
       return false if anonymous?
       @user.staff? || @user.trust_level >= SiteSetting.csl_min_trust_level_to_ignore_users
     end
 
   end
 
-  class ::PostActionCreator
+  class PostActionCreator
 
     private
     def auto_hide_if_needed
