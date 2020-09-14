@@ -5,7 +5,7 @@ import User from "discourse/models/user";
 export default {
   name: "enable-links",
 
-  initialize(container) {
+  initialize() {
     withPluginApi("0.8.33", pluginInit);
   },
 };
