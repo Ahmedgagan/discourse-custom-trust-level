@@ -9,9 +9,38 @@
 enabled_site_setting :custom_trust_level_enabled
 load File.expand_path('../models/custom_trust_level_setting.rb', __FILE__)
 after_initialize do
+
+  self.on(:post_created) do |post, options|
+    user = User.find(post.user_id)
+    topic = Topic.find(post.topic_id)
+
+    if !(user.admin || user.moderator) && !topic.private_message?
+      if topic.posts_count <= 20 && topic.posts.where("user_id=?", user.id).count >= SiteSetting.csl_numbers_of_replies_upto_20_posts
+        MessageBus.publish("/#{user.id}/custom_can_create_post", false)
+      elsif topic.posts_count > 20 && topic.posts_count <= 50 && topic.posts.where("user_id=?", user.id).count >= SiteSetting.csl_numbers_of_replies_upto_50_posts
+        MessageBus.publish("/#{user.id}/custom_can_create_post", false)
+      elsif topic.posts_count > 50 && topic.posts.where("user_id=?", user.id).count >= SiteSetting.csl_numbers_of_replies_above_50_posts
+        MessageBus.publish("/#{user.id}/custom_can_create_post", false)
+      else
+        MessageBus.publish("/#{user.id}/custom_can_create_post", true)
+      end
+    end
+  end
+
   module ModifyCanCreate
 
     def can_create_post_on_topic?(topic)
+      return true if is_admin?
+      return true if is_moderator?
+
+      if !topic.private_message?
+        return false if topic.posts_count <= 20 && topic.posts.where("user_id=?", current_user.id).count >= SiteSetting.csl_numbers_of_replies_upto_20_posts
+
+        return false if topic.posts_count > 20 && topic.posts_count <= 50 && topic.posts.where("user_id=?", current_user.id).count >= SiteSetting.csl_numbers_of_replies_upto_50_posts
+
+        return false if topic.posts_count > 50 && topic.posts.where("user_id=?", current_user.id).count >= SiteSetting.csl_numbers_of_replies_above_50_posts
+      end
+
       is_admin? || is_moderator? || (super && user.trust_level >= SiteSetting.csl_can_create_post_on_topic_min_trust_level)
     end
 
