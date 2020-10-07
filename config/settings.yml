@@ -27,3 +27,15 @@ plugins:
     default: 2
     enum: "TrustLevelSetting"
     client: true
+  csl_numbers_of_replies_upto_20_posts:
+    min: 1
+    default: 2
+    client: true
+  csl_numbers_of_replies_upto_50_posts:
+    min: 1
+    default: 3
+    client: true
+  csl_numbers_of_replies_above_50_posts:
+    min: 1
+    default: 5
+    client: true

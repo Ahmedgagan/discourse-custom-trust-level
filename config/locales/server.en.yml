@@ -7,3 +7,6 @@ en:
     csl_display_tl0_website_as_link: "Have actual links in the ‘about me’ field of tl0 users profile"
     csl_can_invite_to_topic_min_trust_level: "Define minimum trust level to invite on topic"
     csl_min_trust_level_to_ignore_users: "Define minimum trust level of users to ignore other users"
+    csl_numbers_of_replies_upto_20_posts: "maximum number of reply a user can give in a topic upto 20 posts"
+    csl_numbers_of_replies_upto_50_posts: "maximum number of reply a user can give in a topic upto 50 posts"
+    csl_numbers_of_replies_above_50_posts: maximum number of reply a user can give in a topic above 50 posts"
