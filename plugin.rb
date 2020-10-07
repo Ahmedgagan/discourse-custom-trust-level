@@ -92,6 +92,18 @@ after_initialize do
       @user.staff? || @user.trust_level >= SiteSetting.csl_min_trust_level_to_ignore_users
     end
 
+    def can_invite_to_forum?(groups = nil)
+      authenticated? &&
+      (SiteSetting.max_invites_per_day.to_i > 0 || is_staff?) &&
+      !SiteSetting.enable_sso &&
+      SiteSetting.enable_local_logins &&
+      (
+        (!SiteSetting.must_approve_users? && @user.has_trust_level?(SiteSetting.csl_min_trust_level_to_invite_to_forum)) ||
+        is_staff?
+      ) &&
+      (groups.blank? || is_admin? || groups.all? { |g| can_edit_group?(g) })
+    end
+
   end
 
   module PostActionCreatorExtender
