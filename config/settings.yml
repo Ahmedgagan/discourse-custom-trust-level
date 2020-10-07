@@ -27,3 +27,7 @@ plugins:
     default: 2
     enum: "TrustLevelSetting"
     client: true
+  csl_min_trust_level_to_invite_to_forum:
+    default: 2
+    enum: "TrustLevelSetting"
+    client: true

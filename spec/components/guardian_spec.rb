@@ -19,11 +19,11 @@ describe Guardian do
     end
 
     it 'returns true if user has trust_level specified in site setting' do
-      expect(Guardian.new(trust_level_1).can_create_post_on_topic?(topic)).to eq(true)
+      expect(Guardian.new(trust_level_1).can_create_post_on_topic?(topic)).to be_truthy
     end
 
     it 'returns false if user doesnt have has trust_level specified in site setting' do
-      expect(Guardian.new(trust_level_0).can_create_post_on_topic?(topic)).to eq(false)
+      expect(Guardian.new(trust_level_0).can_create_post_on_topic?(topic)).to be_falsey
     end
   end
 
@@ -39,7 +39,7 @@ describe Guardian do
       end
 
       it 'returns true for users of trust_level_3' do
-        expect(Guardian.new(trust_level_3).can_edit_topic?(topic)).to eq(true)
+        expect(Guardian.new(trust_level_3).can_edit_topic?(topic)).to be_truthy
       end
     end
 
@@ -49,7 +49,7 @@ describe Guardian do
       end
 
       it 'returns false for users of trust_level_3' do
-        expect(Guardian.new(trust_level_3).can_edit_topic?(topic)).to eq(false)
+        expect(Guardian.new(trust_level_3).can_edit_topic?(topic)).to be_falsey
       end
     end
   end
@@ -61,7 +61,7 @@ describe Guardian do
       end
 
       it 'returns true for users having trust_level_0' do
-        expect(Guardian.new(trust_level_0).can_reply_as_new_topic?(topic)).to eq(true)
+        expect(Guardian.new(trust_level_0).can_reply_as_new_topic?(topic)).to be_truthy
       end
     end
 
@@ -71,7 +71,7 @@ describe Guardian do
       end
 
       it 'returns false for users having trust_level_0' do
-        expect(Guardian.new(trust_level_0).can_reply_as_new_topic?(topic)).to eq(false)
+        expect(Guardian.new(trust_level_0).can_reply_as_new_topic?(topic)).to be_falsey
       end
     end
   end
@@ -82,11 +82,11 @@ describe Guardian do
     end
 
     it 'returns true for users having csl_can_invite_to_topic_min_trust_level' do
-      expect(Guardian.new(trust_level_2).can_invite_to?(topic)).to eq(true)
+      expect(Guardian.new(trust_level_2).can_invite_to?(topic)).to be_truthy
     end
 
     it 'returns false for users not having csl_can_invite_to_topic_min_trust_level' do
-      expect(Guardian.new(trust_level_0).can_invite_to?(topic)).to eq(false)
+      expect(Guardian.new(trust_level_0).can_invite_to?(topic)).to be_falsey
     end
   end
 
@@ -96,11 +96,26 @@ describe Guardian do
     end
 
     it 'returns true for users having csl_min_trust_level_to_ignore_users' do
-      expect(Guardian.new(trust_level_2).can_ignore_users?).to eq(true)
+      expect(Guardian.new(trust_level_2).can_ignore_users?).to be_truthy
     end
 
     it 'returns false for users not having csl_min_trust_level_to_ignore_users' do
-      expect(Guardian.new(trust_level_0).can_ignore_users?).to eq(false)
+      expect(Guardian.new(trust_level_0).can_ignore_users?).to be_falsey
     end
   end
+
+  describe 'can_invite_to_forum?' do
+    before do
+      SiteSetting.csl_min_trust_level_to_invite_to_forum = 3
+    end
+
+    it 'returns true for users having csl_min_trust_level_to_invite_to_forum' do
+      expect(Guardian.new(trust_level_3).can_invite_to_forum?).to be_truthy
+    end
+
+    it 'returns false for users not having csl_min_trust_level_to_invite_to_forum' do
+      expect(Guardian.new(trust_level_2).can_invite_to_forum?).to be_falsey
+    end
+  end
+
 end
