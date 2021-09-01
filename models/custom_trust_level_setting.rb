@@ -10,13 +10,14 @@ class CustomTrustLevelSetting < EnumSiteSetting
   end
 
   def self.values
-    levels = TrustLevel.all
+    # levels = TrustLevel.all
     @values ||= valid_values.map { |x|
       {
-        name: x.is_a?(Integer) ? "#{x}: #{levels[x.to_i].name}" : x,
+        name: translation(x),
         value: x
       }
     }
+
     @values.unshift({ name: "none", value: -1 })
   end
 
@@ -24,5 +25,14 @@ class CustomTrustLevelSetting < EnumSiteSetting
     TrustLevel.valid_range.to_a.unshift(-1)
   end
 
+  def self.translation(value)
+    I18n.t(
+      "js.trust_levels.detailed_name",
+      level: value,
+      name: TrustLevel.name(value)
+    )
+  end
+
   private_class_method :valid_values
+  private_class_method :translation
 end
