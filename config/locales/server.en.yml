@@ -11,3 +11,4 @@ en:
     csl_numbers_of_replies_upto_50_posts: "maximum number of reply a user can give in a topic upto 50 posts"
     csl_numbers_of_replies_above_50_posts: maximum number of reply a user can give in a topic above 50 posts"
     csl_min_trust_level_to_invite_to_forum: "Define minimum trust level of users to invite other users to forum"
+    csl_topic_id_for_trust_level_freeze: "Topic ID which is requred to be liked for trust level upgrade"

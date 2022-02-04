@@ -8,6 +8,7 @@
 
 enabled_site_setting :custom_trust_level_enabled
 load File.expand_path('../models/custom_trust_level_setting.rb', __FILE__)
+DiscoursePluginRegistry.serialized_current_user_fields << "allow_trust_level_upgrade"
 after_initialize do
 
   self.on(:post_created) do |post, options|
@@ -95,7 +96,7 @@ after_initialize do
     def can_invite_to_forum?(groups = nil)
       authenticated? &&
       (SiteSetting.max_invites_per_day.to_i > 0 || is_staff?) &&
-      !SiteSetting.enable_sso &&
+      !SiteSetting.enable_discourse_connect &&
       SiteSetting.enable_local_logins &&
       (
         (!SiteSetting.must_approve_users? && @user.has_trust_level?(SiteSetting.csl_min_trust_level_to_invite_to_forum)) ||
@@ -116,7 +117,44 @@ after_initialize do
     end
   end
 
+  module CustomTrustLevelGranter
+    def grant
+      if @user.trust_level < @trust_level && @user.allow_trust_level_upgrade
+        @user.change_trust_level!(@trust_level)
+        @user.save!
+      end
+    end
+  end
+
+  add_to_class(:user, :allow_trust_level_upgrade) do
+    return true if self.admin?
+    return true if SiteSetting.csl_topic_id_for_trust_level_freeze.to_i <= 0
+    return true if Topic.find(SiteSetting.csl_topic_id_for_trust_level_freeze.to_i).user_id == self.id
+    return true if self.custom_fields['allow_trust_level_upgrade']
+    return true if Topic.find(SiteSetting.csl_topic_id_for_trust_level_freeze.to_i).first_post.post_actions.where(post_action_type_id: PostActionType.types[:like], user_id: self.id).first
+
+    return false
+  end
+
+  add_to_serializer(:current_user, :allow_trust_level_upgrade) do
+    object.allow_trust_level_upgrade
+  end
+
   PostActionCreator.prepend PostActionCreatorExtender if SiteSetting.custom_trust_level_enabled
 
   Guardian.prepend ModifyCanCreate if SiteSetting.custom_trust_level_enabled
+
+  TrustLevelGranter.prepend CustomTrustLevelGranter if SiteSetting.custom_trust_level_enabled
+
+  register_user_custom_field_type('allow_trust_level_upgrade', :boolean)
+  allow_staff_user_custom_field 'allow_trust_level_upgrade'
+  allow_public_user_custom_field 'allow_trust_level_upgrade'
+  register_editable_user_custom_field 'allow_trust_level_upgrade'
+
+  on(:like_created) do |like|
+    if like.post.topic_id == SiteSetting.csl_topic_id_for_trust_level_freeze.to_i && !like.user.custom_fields['allow_trust_level_upgrade']
+      like.user.custom_fields['allow_trust_level_upgrade'] = true
+      like.user.save_custom_fields(true)
+    end
+  end
 end
