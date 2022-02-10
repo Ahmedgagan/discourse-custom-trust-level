@@ -22,7 +22,7 @@ function pluginInit(api) {
   const currentUser = api.getCurrentUser();
   const siteSettings = api.container.lookup("site-settings:main");
 
-  if (!currentUser.allow_trust_level_upgrade) {
+  if (currentUser && !currentUser.allow_trust_level_upgrade) {
     api.addGlobalNotice(
       `Please read <a href='${postUrl(null, parseInt(siteSettings.csl_topic_id_for_trust_level_freeze))}'>Beginners Guide</a> topic and make sure to give it a like.`,
       "trust-level-freeze-notice",
