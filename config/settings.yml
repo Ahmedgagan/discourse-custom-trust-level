@@ -43,6 +43,10 @@ plugins:
     default: 2
     enum: "TrustLevelSetting"
     client: true
+  csl_user_trust_level_to_freeze:
+    default: 0
+    enum: "TrustLevelSetting"
+    client: true
   csl_topic_id_for_trust_level_freeze:
     default: 0
     client: true

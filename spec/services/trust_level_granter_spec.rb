@@ -20,5 +20,21 @@ describe TrustLevelGranter do
       user.reload
       expect(user.trust_level).to eq(3)
     end
+
+    it 'does not grants trust level when not liked specified topic' do
+      user = Fabricate(:user, email: "foo@bar.com", trust_level: 0)
+      TrustLevelGranter.grant(3, user)
+
+      user.reload
+      expect(user.trust_level).to eq(0)
+    end
+
+    it 'grants trust level when not liked specified topic and users trust level is greater than specified' do
+      user = Fabricate(:user, email: "foo@bar.com", trust_level: 1)
+      TrustLevelGranter.grant(3, user)
+
+      user.reload
+      expect(user.trust_level).to eq(3)
+    end
   end
 end

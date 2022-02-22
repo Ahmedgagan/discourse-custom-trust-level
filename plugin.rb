@@ -127,8 +127,9 @@ after_initialize do
   end
 
   add_to_class(:user, :allow_trust_level_upgrade) do
-    return true if self.admin?
     return true if SiteSetting.csl_topic_id_for_trust_level_freeze.to_i <= 0
+    return true if self.admin?
+    return true if self.trust_level > SiteSetting.csl_user_trust_level_to_freeze
     return true if Topic.find(SiteSetting.csl_topic_id_for_trust_level_freeze.to_i).user_id == self.id
     return true if self.custom_fields['allow_trust_level_upgrade']
     return true if Topic.find(SiteSetting.csl_topic_id_for_trust_level_freeze.to_i).first_post.post_actions.where(post_action_type_id: PostActionType.types[:like], user_id: self.id).first
